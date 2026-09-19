@@ -7,16 +7,23 @@ def menu():
     print()
     print(Fore.CYAN + Style.BRIGHT + "====== MENU ======")
     print("1- cadastar produtos \n2-listar produtos \n0-Encerrar programa \n")
-
-    escolha= int(input("O que você deseja fazer?  "))
-    return escolha 
+while True:
+    try:
+        escolha = int(input("O que você deseja fazer?  "))
+    if escolha in [0, 1, 2]:
+        return escolha 
+except ValueError:
+    print(Fore.RED + "Digite apenas um número!")
+print(Fore.YELLOW + "Opção inválida! Digite 0, 1 ou 2.")
 
 def cadastrar(arquivo):
     print()
-    print("====== CADASTRO DE PRODUTOS ====== \n ")
+    print("\n ====== CADASTRO DE PRODUTOS ====== \n ")
 
     nome_produto= input("Nome do produto: ")
-    
+    if nome_produto.strip() == "":
+        print(Fore.RED + "O nome do produto não pode estar vazio!")
+        continue 
     while True:
         try:
             preco = float(input("preço do produto: "))
@@ -43,8 +50,7 @@ def cadastrar(arquivo):
         dado.write(
             f"{nome_produto}, {preco}, {quantidade} \n"
         )
-
-
+            print(Fore.GREEN + "Produto cadastrado com sucesso!")
 def listar_produtos(arquivo):
     print()
     print(Fore.GREEN"====== PRODUTOS CADASTRADOS ====== \n")
