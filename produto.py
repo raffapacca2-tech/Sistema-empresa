@@ -10,9 +10,9 @@ def menu():
 while True:
     try:
         escolha = int(input("O que você deseja fazer?  "))
-    if escolha in [0, 1, 2]:
-        return escolha 
-except ValueError:
+        if escolha in [0, 1, 2]:
+           return escolha 
+    except ValueError:
     print(Fore.RED + "Digite apenas um número!")
 print(Fore.YELLOW + "Opção inválida! Digite 0, 1 ou 2.")
 
@@ -48,12 +48,12 @@ def cadastrar(arquivo):
 
     with open (arquivo, "a", encoding="utf-8") as dado:
         dado.write(
-            f"{nome_produto}, {preco}, {quantidade} \n"
+            f"{nome_produto}, {preco}, {quantidade}\n"
         )
             print(Fore.GREEN + "Produto cadastrado com sucesso!")
 def listar_produtos(arquivo):
     print()
-    print(Fore.GREEN"====== PRODUTOS CADASTRADOS ====== \n")
+    print(Fore.GREEN + "====== PRODUTOS CADASTRADOS ====== \n")
 
     with open(arquivo, "r", encoding="utf-8") as dados:
         for linha in dados:
