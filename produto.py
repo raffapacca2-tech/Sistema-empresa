@@ -13,22 +13,30 @@ while True:
         if escolha in [0, 1, 2]:
            return escolha 
     except ValueError:
-    print(Fore.RED + "Digite apenas um número!")
-print(Fore.YELLOW + "Opção inválida! Digite 0, 1 ou 2.")
+        print(Fore.RED + "Digite apenas um número!")
+        
+    print(Fore.YELLOW + "Opção inválida! Digite 0, 1 ou 2.")
 
 def cadastrar(arquivo):
     print()
     print("\n ====== CADASTRO DE PRODUTOS ====== \n ")
 
+while True:
     nome_produto= input("Nome do produto: ")
-    if nome_produto.strip() == "":
-        print(Fore.RED + "O nome do produto não pode estar vazio!")
+    if nome_produto.strip():
+        break
+    print(Fore.RED + "O nome do produto não pode estar vazio!")
         continue 
+
     while True:
         try:
             preco = float(input("preço do produto: "))
+            preco = float(preco.replace(",""."))
             if preco <0:
+                break
                 print(Fore.RED + "O preço deve ser maior que zero (0)")
+        except ValueError:
+            print(Fore.RED + "Digite um preço válido!")
                 continue
                 
             break
@@ -38,11 +46,9 @@ def cadastrar(arquivo):
     while True: 
         try: 
             quantidade= int(input("quantidade de produtos:"))
-            if quantidade <0:
+            if quantidade >= 0:
+                break
                 print:(Fore.RED + "A quantidade deve ser maior que zero (0)")
-                continue
-                
-            break
         except ValueError:
             print(Fore.RED + "Digite uma quantidade válida!")
 
@@ -55,15 +61,20 @@ def listar_produtos(arquivo):
     print()
     print(Fore.GREEN + "====== PRODUTOS CADASTRADOS ====== \n")
 
+encontrou = False
+try:
     with open(arquivo, "r", encoding="utf-8") as dados:
         for linha in dados:
             lista=linha.split(", ")
-
+            encontrou = True
             print(f"{Fore.YELLOW}Produto: {lista[0]} ")
             print(f"{Fore.YELLOW}Preço: {lista[1]}")
             print(f"{Fore.YELLOW}Quantidade: {lista[2]} ")
-
-
+        if not encontrou:
+            print(Fore.YELLOW + "Nenhum produto cadastrado ainda!")
+except fileNotFoundError:
+    print(Fore.RED + "Nenhum produto cadartrado ainda!")
+    
 arquivo= r"C:\Users\manur\OneDrive\Documentos\EM 1DS\PA\trabalho em grupo\Desenvolvimento-colaborativo-com-git-e-github\produtos.txt"
 
 while True:
