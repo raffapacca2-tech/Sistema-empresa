@@ -1,118 +1,111 @@
 import os
-import colorama 
+import colorama
 from colorama import Fore, Back, Style
-colorama.init(autoreset=True) 
+colorama.init(autoreset=True)
 
+# CORRIGIDO: caminho relativo, funciona em qualquer PC
+ARQUIVO = "produtos.txt"
 
 def menu():
     print()
     print(Fore.CYAN + Style.BRIGHT + "====== MENU ======")
-    print("1- cadastar produtos \n2-listar produtos \n0-Encerrar programa \n")
-
+    print("1- Cadastrar produtos")
+    print("2- Listar produtos")
+    print("3- Excluir produto")
+    print("0- Encerrar programa\n")
     while True:
         try:
             escolha = int(input("O que você deseja fazer? "))
-            if escolha in [0, 1, 2]:
-                return escolha 
-
-            if escolha < 0 or escolha>3:
-                print(Fore.RED + "Opção inválida! Digite 0, 1 ou 2. \n")
-
+            if escolha in [0, 1, 2, 3]:
+                return escolha
+            print(Fore.RED + "Opção inválida! Digite 0, 1, 2 ou 3.\n")
         except ValueError:
-            #print(Fore.RED + "\nDigite apenas um número!")
-            print(Fore.RED + "Opção inválida! Digite 0, 1 ou 2. \n")
-            
-    
-def cadastrar(arquivo):
-    
-    print(Fore.GREEN + "\n====== CADASTRO DE PRODUTOS ====== \n ")
+            print(Fore.RED + "Opção inválida! Digite 0, 1, 2 ou 3.\n")
 
+def cadastrar(arquivo):
+    print(Fore.GREEN + "\n====== CADASTRO DE PRODUTOS ======\n")
     while True:
-        nome_produto= input("Nome do produto: ")
+        nome_produto = input("Nome do produto: ")
         if nome_produto.strip():
             break
-        print(Fore.RED + "O nome do produto não pode estar vazio! \n")
-        continue 
-                         
+        print(Fore.RED + "O nome do produto não pode estar vazio!\n")
     while True:
         try:
-            preco = float(input("preço do produto: ").replace("," , "."))
-            
-            if preco <0:
-                print(Fore.RED + "O preço deve ser maior que zero (0) \n")
+            preco = float(input("Preço do produto: ").replace(",", "."))
+            if preco <= 0:
+                print(Fore.RED + "O preço deve ser maior que zero.\n")
                 continue
-
-            else:
-                break
-
+            break
         except ValueError:
-            print(Fore.RED + "Digite um preço válido! \n")
-            continue
-                
-            #break
-        #except ValueError: 
-            #print(Fore.RED + "Digite um preço válido!")
-        
-    while True: 
-        try: 
-            quantidade= int(input("quantidade de produtos:"))
-
+            print(Fore.RED + "Digite um preço válido!\n")
+    while True:
+        try:
+            quantidade = int(input("Quantidade de produtos: "))
             if quantidade <= 0:
-                #break
-                print(Fore.RED + "A quantidade deve ser maior que zero (0)")
+                print(Fore.RED + "A quantidade deve ser maior que zero.\n")
                 continue
-
-            else:
-                break
-                
+            break
         except ValueError:
-            print(Fore.RED + "Digite uma quantidade válida! \n")
-            continue
+            print(Fore.RED + "Digite uma quantidade válida!\n")
+    with open(arquivo, "a", encoding="utf-8") as dado:
+        dado.write(f"{nome_produto};{preco};{quantidade}\n")
+    print(Fore.GREEN + "Produto cadastrado com sucesso!")
 
-    with open (arquivo, "a", encoding="utf-8") as dado:
-        dado.write(
-            f"{nome_produto}, {preco}, {quantidade}\n"
-        )
-        print(Fore.GREEN + "Produto cadastrado com sucesso!")
-
-        
 def listar_produtos(arquivo):
     print()
-    print(Fore.GREEN + "====== PRODUTOS CADASTRADOS ====== \n")
-
+    print(Fore.GREEN + "====== PRODUTOS CADASTRADOS ======\n")
     encontrou = False
     try:
         with open(arquivo, "r", encoding="utf-8") as dados:
             for linha in dados:
-                lista=linha.split(", ")
+                lista = linha.strip().split(";")
                 encontrou = True
-                print(f"{Fore.YELLOW}Produto: {lista[0]} ")
-                print(f"{Fore.YELLOW}Preço: {lista[1]}")
-                print(f"{Fore.YELLOW}Quantidade: {lista[2]} ")
-                
-            if not encontrou:
-                print(Fore.YELLOW + "Nenhum produto cadastrado ainda!")
+                print(Fore.YELLOW + f"Produto: {lista[0]}")
+                print(Fore.YELLOW + f"Preço: {lista[1]}")
+                print(Fore.YELLOW + f"Quantidade: {lista[2]}")
+                print()
+        if not encontrou:
+            print(Fore.YELLOW + "Nenhum produto cadastrado ainda!")
     except FileNotFoundError:
-        print(Fore.RED + "Nenhum produto cadartrado ainda!")
+        print(Fore.RED + "Nenhum produto cadastrado ainda!")
 
-    
-arquivo= r"C:\Users\manur\OneDrive\Documentos\EM 1DS\PA\trabalho em grupo\Desenvolvimento-colaborativo-com-git-e-github\produtos.txt"
+def excluir_produto(arquivo):
+    print()
+    print(Fore.CYAN + "====== EXCLUIR PRODUTO ======\n")
+    nome_excluir = input("Digite o nome do produto que deseja excluir: ")
+    try:
+        with open(arquivo, "r", encoding="utf-8") as dados:
+            linhas = dados.readlines()
+        novas_linhas = []
+        encontrou = False
+        for linha in linhas:
+            lista = linha.strip().split(";")
+            if lista[0].lower() == nome_excluir.strip().lower():
+                encontrou = True
+            else:
+                novas_linhas.append(linha)
+        if encontrou:
+            with open(arquivo, "w", encoding="utf-8") as dados:
+                dados.writelines(novas_linhas)
+            print(Fore.GREEN + "Produto excluído com sucesso!")
+        else:
+            print(Fore.YELLOW + "Produto não encontrado!")
+    except FileNotFoundError:
+        print(Fore.YELLOW + "Nenhum produto cadastrado ainda!")
 
-while True:
-    escolha= menu()
+# FUNÇÃO QUE O MAIN.PY VAI CHAMAR
+def executar():
+    while True:
+        escolha = menu()
+        if escolha == 1:
+            cadastrar(ARQUIVO)
+        elif escolha == 2:
+            listar_produtos(ARQUIVO)
+        elif escolha == 3:
+            excluir_produto(ARQUIVO)
+        elif escolha == 0:
+            break
 
-    if escolha == 1:
-        cadastrar(arquivo)
-
-    if escolha == 2:
-        listar_produtos(arquivo)
-
-    if escolha == 0:
-        break
-
-#while True: 
-    #try:
-        #escolha = int(input("O que você deseja fazer? "))
-    #return escolha
-    #except valueError:
-    #print(Fore.RED + "Digite apenas um número!")
+# ISSO AQUI ARRUMA O SEU PRINT - só roda se executar direto o produto.py
+if __name__ == "__main__":
+    executar()
