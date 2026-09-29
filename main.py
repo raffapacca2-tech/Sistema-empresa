@@ -1,4 +1,3 @@
-# Sistema integrado - Projeto Final
 import cliente
 import produto
 
@@ -10,17 +9,14 @@ def main():
         print("0 - Sair")
         op = input("Escolha: ")
         if op == "1":
-            try:
-                cliente.menu()
-            except AttributeError:
-                cliente.main()
+            menu_cliente = cliente.Menu()
+            menu_cliente.executar()
         elif op == "2":
-            try:
-                produto.menu()
-            except AttributeError:
-                produto.main()
+            produto.executar()
         elif op == "0":
             break
+        else:
+            print("Opção inválida!")
 
 if __name__ == "__main__":
     main()
